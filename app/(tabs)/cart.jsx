@@ -1,14 +1,24 @@
-import {View,Text,FlatList,Image,TouchableOpacity,StyleSheet,} from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet,} from "react-native";
 import { useContext } from "react";
 import { CartContext } from "../../src/context/CartContext";
 
 export default function Cart() {
-  const {cart,increaseQty,decreaseQty,removeFromCart,totalPrice,} = useContext(CartContext);
+  const {
+    cart,
+    increaseQty,
+    decreaseQty,
+    removeFromCart,
+    totalPrice,
+  } = useContext(CartContext);
 
   if (cart.length === 0) {
     return (
       <View style={styles.center}>
-        <Text style={styles.emptyText}>🛒 Your cart is empty</Text>
+        <Text style={styles.emptyIcon}>🛒</Text>
+        <Text style={styles.emptyText}>Your cart is empty</Text>
+        <Text style={styles.emptySub}>
+          Add items to continue shopping
+        </Text>
       </View>
     );
   }
@@ -19,6 +29,7 @@ export default function Cart() {
         data={cart}
         keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 140 }}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Image source={{ uri: item.thumbnail }} style={styles.image} />
@@ -28,29 +39,30 @@ export default function Cart() {
                 {item.title}
               </Text>
 
-              <Text style={styles.price}>${item.price}</Text>
-
-              <View style={styles.actionRow}>
-                <View style={styles.qtyContainer}>
-                  <TouchableOpacity
-                    style={styles.qtyCircle}
-                    onPress={() => decreaseQty(item._id)}
-                  >
-                    <Text style={styles.qtySymbol}>−</Text>
-                  </TouchableOpacity>
-
-                  <Text style={styles.qty}>{item.quantity}</Text>
-
-                  <TouchableOpacity
-                    style={styles.qtyCircle}
-                    onPress={() => increaseQty(item._id)}
-                  >
-                    <Text style={styles.qtySymbol}>+</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity onPress={() => removeFromCart(item._id)}>
+              <View style={styles.priceRow}>
+                <Text style={styles.price}>₹ {item.price}</Text>
+                <TouchableOpacity
+                  onPress={() => removeFromCart(item._id)}
+                >
                   <Text style={styles.remove}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.qtyRow}>
+                <TouchableOpacity
+                  style={styles.qtyBtn}
+                  onPress={() => decreaseQty(item._id)}
+                >
+                  <Text style={styles.qtySymbol}>−</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.qty}>{item.quantity}</Text>
+
+                <TouchableOpacity
+                  style={styles.qtyBtn}
+                  onPress={() => increaseQty(item._id)}
+                >
+                  <Text style={styles.qtySymbol}>+</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -58,15 +70,15 @@ export default function Cart() {
         )}
       />
 
-      {/* Footer */}
+      {/* Checkout Footer */}
       <View style={styles.footer}>
-        <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.total}>${totalPrice.toFixed(2)}</Text>
+        <View>
+          <Text style={styles.totalLabel}>Total Amount</Text>
+          <Text style={styles.total}>₹ {totalPrice.toFixed(2)}</Text>
         </View>
 
         <TouchableOpacity style={styles.checkout}>
-          <Text style={styles.checkoutText}>Proceed to Checkout</Text>
+          <Text style={styles.checkoutText}>Checkout</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -86,26 +98,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  emptyIcon: {
+    fontSize: 42,
+    marginBottom: 10,
+  },
+
   emptyText: {
-    color: "#cbd5f5",
-    fontSize: 18,
-    fontWeight: "600",
+    color: "#f8fafc",
+    fontSize: 20,
+    fontWeight: "700",
+  },
+
+  emptySub: {
+    color: "#94a3b8",
+    marginTop: 6,
   },
 
   card: {
     flexDirection: "row",
     backgroundColor: "#0f172a",
-    marginHorizontal: 14,
-    marginVertical: 8,
+    marginHorizontal: 16,
+    marginTop: 12,
     padding: 14,
-    borderRadius: 18,
-    elevation: 4,
+    borderRadius: 20,
   },
 
   image: {
-    width: 90,
-    height: 90,
-    borderRadius: 14,
+    width: 92,
+    height: 92,
+    borderRadius: 16,
     marginRight: 14,
   },
 
@@ -116,33 +137,39 @@ const styles = StyleSheet.create({
 
   title: {
     color: "#f8fafc",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "700",
+  },
+
+  priceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 6,
   },
 
   price: {
     color: "#38bdf8",
-    fontSize: 15,
-    marginTop: 4,
+    fontSize: 16,
+    fontWeight: "800",
+  },
+
+  remove: {
+    color: "#f87171",
+    fontSize: 13,
     fontWeight: "600",
   },
 
-  actionRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 12,
-  },
-
-  qtyContainer: {
+  qtyRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 10,
   },
 
-  qtyCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+  qtyBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: "#1e293b",
     justifyContent: "center",
     alignItems: "center",
@@ -157,52 +184,46 @@ const styles = StyleSheet.create({
   qty: {
     color: "#f8fafc",
     fontSize: 16,
-    fontWeight: "600",
-    marginHorizontal: 14,
+    fontWeight: "700",
+    marginHorizontal: 16,
   },
 
-  remove: {
-    color: "#f87171",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-
+  /* Footer */
   footer: {
-    padding: 16,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#020617",
     borderTopWidth: 1,
     borderColor: "#1e293b",
-    backgroundColor: "#020617",
-  },
-
-  totalRow: {
+    padding: 16,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    alignItems: "center",
   },
 
   totalLabel: {
     color: "#94a3b8",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 14,
   },
 
   total: {
     color: "#f8fafc",
-    fontSize: 20,
-    fontWeight: "800",
+    fontSize: 22,
+    fontWeight: "900",
   },
 
   checkout: {
     backgroundColor: "#38bdf8",
-    paddingVertical: 15,
-    borderRadius: 16,
-    alignItems: "center",
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 18,
   },
 
   checkoutText: {
+    color: "#020617",
     fontSize: 16,
     fontWeight: "800",
-    color: "#020617",
-    letterSpacing: 0.5,
   },
 });

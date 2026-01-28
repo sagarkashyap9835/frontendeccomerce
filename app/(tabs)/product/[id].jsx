@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
+import {View,Text,Image,StyleSheet,ScrollView,ActivityIndicator,TouchableOpacity,} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getSingleProductApi } from "../../../src/api/product.js"
