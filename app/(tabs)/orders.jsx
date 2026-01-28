@@ -26,7 +26,7 @@ export default function Orders() {
   if (orders.length === 0) {
     return (
       <View style={styles.center}>
-        <Text style={styles.emptyIcon}>📦</Text>
+        <Text style={styles.emptyIcon}></Text>
         <Text style={styles.emptyText}>No orders yet</Text>
         <Text style={styles.emptySub}>
           Your orders will appear here
